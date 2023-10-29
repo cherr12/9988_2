@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>저전력 기종 확인하기</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1, h2, h3 {
+            margin-top: 0;
+            padding-bottom: 20px; /* 제목 아래에 간격 추가 */
+        }
+
+        button {
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        /* 호환성 확인하기 버튼 스타일 */
+        .checkButton {
+            background-color: #4CAF50; /* 배경 색상 */
+            color: white; /* 텍스트 색상 */
+        }
+
+        .checkButton:hover {
+            background-color: #45a049; /* 호버 시 배경 색상 변경 */
+        }
+        /* 기타 스타일은 유지하면서 새로운 스타일을 추가합니다. */
+        
+        /* 드롭다운 메뉴 스타일 */
+        #manufacturer {
+            padding: 10px 15px; /* 패딩을 추가하여 드롭다운의 크기를 조절합니다. */
+            font-size: 16px; /* 폰트 크기를 조절합니다. */
+        }
+    
+        /* 시리즈명 입력칸 스타일 */
+        #seriesName {
+            padding: 10px 15px; /* 패딩을 추가하여 입력칸의 크기를 조절합니다. */
+            font-size: 16px; /* 폰트 크기를 조절합니다. */
+            width: calc(30% - 20px); /* 컨테이너 너비에 맞게 조절하되, 패딩 값을 고려합니다. */
+        }
+    
+        /* 호환성 확인하기 버튼 스타일 */
+        #checkCompatibility {
+            padding: 15px 5px; /* 패딩을 추가하여 버튼의 크기를 조절합니다. */
+            font-size: 20px; /* 폰트 크기를 조절합니다. */
+            cursor: pointer; /* 버튼 위에 마우스를 올리면 포인터로 바뀌게 합니다. */
+        }
+
+            /* 드롭다운 메뉴와 입력 필드, 버튼 간의 간격 조정 */
+        .input-section {
+            margin-bottom: 20px; /* 원하는 간격 값으로 조정 가능 */
+        }
+
+        #manufacturer, #seriesName, #checkCompatibility {
+            margin-bottom: 20px; /* 추가 간격을 주기 위해 margin-bottom 적용 */
+            display: block; /* 요소들을 상하로 배열하기 위해 block으로 설정 */
+        }
+
+        /* 버튼 너비 조정 (선택적) */
+        #checkCompatibility {
+            width: 100%; /* 버튼의 너비를 전체 너비로 설정. 필요에 따라 조정 가능 */
+        }
+
+        /* 드롭다운 메뉴와 입력 필드, 버튼 간의 간격 조정 */
+        .input-section {
+            margin-bottom: 20px; /* 요소 간 간격을 조정합니다 */
+        }
+
+        #manufacturer, #seriesName, #checkCompatibility {
+            margin-bottom: 20px; /* 추가 간격을 주기 위해 margin-bottom 적용 */
+            display: block; /* 요소들을 상하로 배열하기 위해 block으로 설정 */
+        }
+
+        /* 버튼 스타일 조정 */
+        #checkCompatibility {
+        width: 100%; /* 버튼의 너비를 조정합니다 */
+        padding: 15px 5px; /* 버튼 내부의 패딩을 조정합니다 */
+        font-size: 20px; /* 텍스트 크기를 조정합니다 */
+        cursor: pointer; /* 마우스 커서를 버튼 위에 올리면 포인터로 변경되게 합니다 */
+        border: none; /* 버튼의 테두리를 제거합니다 */
+        border-radius: 5px; /* 버튼의 모서리를 둥글게 합니다 */
+    }
+
+        /* 모달 배경 */
+        .modal {
+            display: none; /* 기본적으로 숨김 */
+            position: fixed; /* Stay in place */
+            z-index: 1; /* 위에 레이어 */
+            left: 0;
+            top: 0;
+            width: 100%; /* 전체 너비 */
+            height: 100%; /* 전체 높이 */
+            overflow: auto; /* 스크롤 가능 */
+            background-color: rgb(0,0,0); /* Fallback color */
+            background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+        }
+
+        /* 모달 콘텐츠 */
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto; /* 15% from the top and centered */
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%; /* Could be more or less, depending on screen size */
+        }
+
+        /* 닫기 버튼 */
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+    </style>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var lowPowerModels = [`g1`, `g2`, `g3`, `g4`, `g5`, `g6`, `g7`, `thinq`, `k3`, `k4`, `k5`, `k6`, `k7`, `k8`, `k9`, `k10`, `k11`, `k12`, `k13`, `k14`, `k15`, `k16`, `k17`, `k18`, `k19`, `k20`, `k21`, `k22`, `k23k`, `k24`, `k25`, `k26`, `k27`, `k28`, `k29`, `k30`, `k31`, `k32`, `k33`, `k34`, `k35`, `k36`, `k37`, `k38`, `k39`, `k40`, `q6`, `q7`, `q8`, `q9`, `q61`, `v10`, `v20`, `v30`, `v35`, `velvet`, `벨벳`, `w10`, `w10a`, `w30`, `w30+`, `w30플러스`, `w30pro`, `w30프로`, `x2`, `x4`, `x4+`, `x4플러스`, `x5`, `x300`, `x400`, `x500`, `a`, `a1`, `a2`, `a3`, `a4`, `a5`, `a6`, `a7`, `a8`, `a9`, `a10`, `a11`, `a12`, `a20`, `a20e`, `a20s`, `a30`, `a31`, `a32`, `a42`, `grand`, `grandmax`, `그랜드`, `그랜드맥스`, `j1`, `j2`, `j3`, `j4`, `j5`, `j6`, `j7`, `j8`, `jean`, `jean2`, `진`, `진2`, `jump`, `점프`, `jump2`, `점프2`, `wide1`, `wide2`, `wide3`, `wide4`, `와이드1`, `와이드2`, `와이드3`, `와이드4`, `core`, `coreadvance`, `코어`, `코어어드밴스`, `on`, `온`, `on1`, `온1`, `on2`, `온2`, `on3`, `온3`, `온4`, `on4`, `on5`, `온5`, `on6`, `온6`, `on7`, `온7`, `on7prime`, `온7프라임`, `note1`, `note`, `note2`, `note3`, `note4`, `note5`, `note6`, `note7`, `노트1`, `노트2`, `노트3`, `노트4`, `노트5`, `노트6`, `노트7`, `S1`, `s`, `s2`, `s3`, `s4`, `s6`, `s7`, `fold`, `폴드`, `fold2`, `폴드2`, `flip`, `플립`, `quantum`, `퀀텀`, `quauntum2`, `퀀텀2`, `iPhone`, `iphone3g`, `iphone3gs`, `iphone4`, `iphone4s`, `iphone5`, `iphone5c`, `iphone5s`, `iphone6`, `iphone6+`, `iphone6s`, `iphone6s+`, `iphonese`, `iphonese2`, `아이폰3g`, `아이폰3gs`, `아이폰4`, `아이폰4s`, `아이폰5`, `아이폰5c`, `아이폰5s`, `아이폰6`, `아이폰6+`, `아이폰6플러스`, `아이폰6s`, `아이폰6s플러스`, `아이폰se`, `아이폰에스이`, `아이폰se2`, `아이폰에스이2`]; // 저전력 기종 리스트
+            var resultModal = document.getElementById("resultModal");
+            var resultTextElement = document.getElementById("resultText");
+            var closeButton = document.querySelector(".close");
+
+            // 호환성 확인 함수
+            function checkCompatibility() {
+                var seriesName = document.getElementById('seriesName').value.trim().toLowerCase();
+                var result = "";
+
+                if (seriesName === "") {
+                    result = "시리즈명을 입력해 주세요.";
+                } else if (lowPowerModels.includes(seriesName)) {
+                    result = "입력하신 기종은 손목닥터 9988 앱과 연동이 어려운 모델입니다.";
+                } else {
+                    result = "손목닥터 9988 앱과 연동이 원활한 모델입니다. 하지만 애플을 제외한 일부 외산폰은 연동에 어려움이 있을 수 있습니다.";
+                }
+
+                resultTextElement.textContent = result; // 결과 텍스트 설정
+                resultModal.style.display = "block"; // 모달 표시
+            }
+
+            // 이벤트 리스너 설정
+            document.getElementById('checkCompatibility').addEventListener('click', checkCompatibility);
+            closeButton.addEventListener('click', function() {
+                resultModal.style.display = "none"; // 모달 닫기
+            });
+
+            // 페이지 밖을 클릭하면 모달 닫기
+            window.onclick = function(event) {
+                if (event.target == resultModal) {
+                    resultModal.style.display = "none";
+                }
+            }
+        });
+    </script>
+</head>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+</head>
+
+<body>
+        <!-- 뒤로가기 버튼 시작 -->
+<nav class="navbar navbar-light">
+    <a class="navbar-brand" href="https://cherr12.github.io/9988/"> <!-- 메인 페이지의 경로로 수정 -->
+      <button type="button" class="btn btn-outline-secondary">
+        ← 
+      </button>
+    </a>
+  </nav>
+  <!-- 뒤로가기 버튼 끝 -->
+
+    <h1>저전력 기종 확인하기</h1>
+
+    <div class="input-section">
+        <label for="manufacturer">제조사:</label>
+        <select id="manufacturer">
+            <option value="samsung">SAMSUNG</option>
+            <option value="apple">APPLE</option>
+            <option value="lg">LG</option>
+            <option value="others">그 외</option>
+        </select>
+    </div>
+
+    <div class="input-section">
+        <label for="seriesName">시리즈명:</label>
+        <input type="text" id="seriesName" placeholder="시리즈명(영문+숫자) 입력">
+    </div>
+
+    <button id="checkCompatibility">호환성 확인하기</button>
+
+        <!-- 결과 출력 영역 -->
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // 저전력 기종 리스트 (모두 소문자로 변환)
+            var lowPowerModels = [`g1`, `g2`, `g3`, `g4`, `g5`, `g6`, `g7`, `thinq`, `k3`, `k4`, `k5`, `k6`, `k7`, `k8`, `k9`, `k10`, `k11`, `k12`, `k13`, `k14`, `k15`, `k16`, `k17`, `k18`, `k19`, `k20`, `k21`, `k22`, `k23k`, `k24`, `k25`, `k26`, `k27`, `k28`, `k29`, `k30`, `k31`, `k32`, `k33`, `k34`, `k35`, `k36`, `k37`, `k38`, `k39`, `k40`, `q6`, `q7`, `q8`, `q9`, `q61`, `v10`, `v20`, `v30`, `v35`, `velvet`, `벨벳`, `w10`, `w10a`, `w30`, `w30+`, `w30플러스`, `w30pro`, `w30프로`, `x2`, `x4`, `x4+`, `x4플러스`, `x5`, `x300`, `x400`, `x500`, `a`, `a1`, `a2`, `a3`, `a4`, `a5`, `a6`, `a7`, `a8`, `a9`, `a10`, `a11`, `a12`, `a20`, `a20e`, `a20s`, `a30`, `a31`, `a32`, `a42`, `grand`, `grandmax`, `그랜드`, `그랜드맥스`, `j1`, `j2`, `j3`, `j4`, `j5`, `j6`, `j7`, `j8`, `jean`, `jean2`, `진`, `진2`, `jump`, `점프`, `jump2`, `점프2`, `wide1`, `wide2`, `wide3`, `wide4`, `와이드1`, `와이드2`, `와이드3`, `와이드4`, `core`, `coreadvance`, `코어`, `코어어드밴스`, `on`, `온`, `on1`, `온1`, `on2`, `온2`, `on3`, `온3`, `온4`, `on4`, `on5`, `온5`, `on6`, `온6`, `on7`, `온7`, `on7prime`, `온7프라임`, `note1`, `note`, `note2`, `note3`, `note4`, `note5`, `note6`, `note7`, `노트1`, `노트2`, `노트3`, `노트4`, `노트5`, `노트6`, `노트7`, `S1`, `s`, `s2`, `s3`, `s4`, `s6`, `s7`, `fold`, `폴드`, `fold2`, `폴드2`, `flip`, `플립`, `quantum`, `퀀텀`, `quauntum2`, `퀀텀2`, `iPhone`, `iphone3g`, `iphone3gs`, `iphone4`, `iphone4s`, `iphone5`, `iphone5c`, `iphone5s`, `iphone6`, `iphone6+`, `iphone6s`, `iphone6s+`, `iphonese`, `iphonese2`, `아이폰3g`, `아이폰3gs`, `아이폰4`, `아이폰4s`, `아이폰5`, `아이폰5c`, `아이폰5s`, `아이폰6`, `아이폰6+`, `아이폰6플러스`, `아이폰6s`, `아이폰6s플러스`, `아이폰se`, `아이폰에스이`, `아이폰se2`, `아이폰에스이2`
+                // 모델 리스트...
+            ];
+
+            // 모든 모델명을 소문자로 변환합니다.
+            lowPowerModels = lowPowerModels.map(function(model) {
+                return model.toLowerCase();
+            });
+
+            document.getElementById('checkCompatibility').addEventListener('click', function () {
+                // 사용자 입력 값 가져오기
+                var seriesName = document.getElementById('seriesName').value.trim().toLowerCase();
+
+                // 결과 초기화
+                var resultText = "";
+                var resultColor = "blue";
+                
+                // 결과 출력
+                var resultModal = document.getElementById("resultModal");
+                var resultText = document.getElementById("resultText");
+                resultText.textContent = result; // 'result'는 당신의 결과 문자열입니다.
+
+                // 모달을 표시
+                resultModal.style.display = "block";
+
+                // 사용자가 모달의 닫기 버튼을 클릭하면 모달을 숨깁니다.
+                document.querySelector(".close").onclick = function() {
+                    resultModal.style.display = "none";
+                }
+
+                // 입력 검증 로직...
+            });
+
+            // '뒤로가기' 버튼에 대한 이벤트 리스너를 별도로 설정합니다.
+            document.getElementById('backButton').addEventListener('click', function() {
+            window.history.back();
+            });
+
+            document.querySelector(".close").onclick = function(event) {
+            event.stopPropagation();
+            resultModal.style.display = "none";
+            };
+        });
+    </script>
+
+<!-- 결과를 표시할 모달 -->
+<div id="resultModal" class="modal">
+
+    <!-- 모달 콘텐츠 -->
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <p id="resultText"></p>
+    </div>
+
+</body>
+</html>
